@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Darts.Client/Darts.Client.csproj" />
+  <Project Path="Darts.Core.Tests/Darts.Core.Tests.csproj" />
+  <Project Path="Darts.Core/Darts.Core.csproj" />
+</Solution>
