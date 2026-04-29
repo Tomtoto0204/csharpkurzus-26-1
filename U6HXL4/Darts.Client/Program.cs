@@ -8,7 +8,7 @@ internal class Program
 {
     private static int Main(string[] args)
     {
-        string playerName;
+        int playerCount;
         int startingPoint;
         bool doubleOut;
         bool doubleIn;
@@ -17,10 +17,12 @@ internal class Program
         Console.WriteLine("Welcome to my Darts application!");
         Console.Write("> ");
 
-        Console.WriteLine("Player name: ");
-        playerName = Console.ReadLine() ?? string.Empty;
+        Console.WriteLine("Player count: ");
+        playerCount = Convert.ToInt32(Console.ReadLine());
+
         Console.WriteLine("Starting point? (301, 501): ");
         startingPoint = Convert.ToInt32(Console.ReadLine());
+
         Console.WriteLine("Double in? [Y/N]");
         if ((Console.ReadLine() ?? string.Empty) == "Y")
         {
@@ -30,6 +32,7 @@ internal class Program
         {
             doubleIn = false;
         }
+
         Console.WriteLine("Double Out? [Y/N]: ");
         if ((Console.ReadLine() ?? string.Empty) == "Y")
         {
@@ -40,7 +43,16 @@ internal class Program
             doubleOut = false;
         }
 
-        Game game = new Game(playerName, startingPoint, doubleIn, doubleOut);
+        Game game = new Game(startingPoint, doubleIn, doubleOut);
+
+        for (int i = 0; i < playerCount; i++)
+        {
+            Console.WriteLine($"Player {i} name: ");
+            string playerName = Console.ReadLine();
+            if (playerName == "" || playerName == null)
+                playerName = $"Player{i}";
+            game.playerName.Add(new Player(playerName, startingPoint));
+        }
 
 
         throw new UnreachableException("This shouldn't happen");
