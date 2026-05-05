@@ -39,11 +39,45 @@ public class Game
         }
     }
 
-    public void ThrowOneDart() { }
-
-    public bool GameEnd()
+    public bool PlayerThrowsOneDart(string dartThrow = "")
     {
-        return false;
+        string[] parts = dartThrow.Split(' ');
+        int multiplier = 1;
+        int throwScore = 0;
+        if (parts.Length > 1)
+        {
+            try
+            {
+                multiplier = Convert.ToInt32(parts[0]);
+                throwScore = Convert.ToInt32(parts[1]);
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+        if (multiplier < 1 || multiplier > 3 || !isThrowable(throwScore))
+            return false;
+
+        Throw currentThrow = new Throw(throwScore, multiplier);
+        getCurrentPlayer().PlayerThrows(currentThrow);
+
+        return true;
+
+    }
+
+    private bool isThrowable(int number)
+    {
+        if (number < 0 || number > 25)
+            return false;
+        if (number > 20 && number < 25)
+            return false;
+        return true;
+    }
+
+    public bool isGameEnd()
+    {
+        return getCurrentPlayer().score == 0;
     }
 
 

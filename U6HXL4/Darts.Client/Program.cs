@@ -13,6 +13,7 @@ internal class Program
         bool doubleIn;
         bool doubleOut;
         bool gameActive;
+        Player currentPlayer;
 
 
 
@@ -64,7 +65,6 @@ internal class Program
         }
 
         Console.WriteLine("GAME CREATED! HAVE FUN!");
-        gameActive = true;
 
 
         //while jatek aktiv
@@ -78,22 +78,52 @@ internal class Program
 
         ScoreboardConsoleWrite();
 
-        while (gameActive)
+        while (true)
         {
-            PlayersTurn();
-            OneThrow();
+            currentPlayer = game.getCurrentPlayer();
+
+            //jatekoslog
+            Console.WriteLine(currentPlayer.turnString());
+
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine(currentPlayer.scoreToString());
+                game.PlayerThrowsOneDart(Console.ReadLine()!);
+                if (currentPlayer.TOOMUCHFLAG)
+                {
+                    Console.WriteLine("Thats too much!!!!");
+                    break;
+                }
+
+                if (currentPlayer.isPlayerWonEarly())
+                {
+                    Console.WriteLine("THE WINNER!!!");
+                    break;
+                }
+
+            }
+            currentPlayer.isRoundOk();
+            Console.WriteLine(currentPlayer.scoreToString());
+
+            if (game.isGameEnd())
+                break;
+            game.nextPlayer();
         }
 
-        string OneThrow()
-        {
-            return Console.ReadLine();
-        }
 
-        void PlayersTurn()
-        {
-            Player currentPlayer = game.getCurrentPlayer();
-            Console.WriteLine($"{currentPlayer.name}'s turn");
-        }
+        ScoreboardConsoleWrite();
+        Console.ReadLine();
+
+
+
+
+
+
+
+
+
+        ///functions
+
 
 
         void ScoreboardConsoleWrite()

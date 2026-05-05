@@ -2,15 +2,20 @@
 
 public class Player
 {
-    public int throwsInTurnCount { get; set; } = 0;
+
     public string name { get; set; }
     public int score { get; set; }
+    public int tempScore { get; set; } = 0;
     public List<Throw> throws { get; set; } = new List<Throw>();
+    public List<Throw> tempThrows { get; set; } = new List<Throw>();
+
+    public bool TOOMUCHFLAG { get; set; } = false;
 
     public Player(string name, int score)
     {
         this.name = name;
         this.score = score;
+        this.tempScore = score;
     }
 
     public int getMaxThrow()
@@ -18,28 +23,45 @@ public class Player
         return throws.Max(t => t.score);
     }
 
-    public bool PlayerThrows(string throwString)
+    public void PlayerThrows(Throw dartThrow)
     {
-        int throwResult = 0;
-        try
+        tempScore = score - (dartThrow.score * dartThrow.multiplier);
+        if (tempScore >= 0)
         {
-            throwResult = Convert.ToInt32(throwString);
-            if (score - throwResult >= 0)
-            {
-                score -= throwResult;
-                throws.Add(new Throw(throwResult, 1));
-                throwsInTurnCount++;
-            }
-            return true;
+            tempThrows.Add(dartThrow);
         }
-        catch (FormatException)
-        {
-            return false;
-        }
+        else
+            TOOMUCHFLAG = true;
     }
-    //Besokalt e TODO
+
     public bool isRoundOk()
     {
-        return true;
+        if (TOOMUCHFLAG)
+            return false;
+        if (tempScore >= 0)
+        {
+            score = tempScore;
+            throws.AddRange(tempThrows);
+            tempScore = 0;
+            tempThrows.Clear();
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool isPlayerWonEarly()
+    {
+        return tempScore == 0;
+    }
+
+    public string turnString()
+    {
+        return ($"{name}'s turn");
+    }
+
+    public string scoreToString()
+    {
+        return ($"{score} point left");
     }
 }
