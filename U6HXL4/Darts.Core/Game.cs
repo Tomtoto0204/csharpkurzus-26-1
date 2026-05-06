@@ -56,7 +56,7 @@ public class Game
                 return false;
             }
         }
-        if (multiplier < 1 || multiplier > 3 || !isThrowable(throwScore))
+        if (multiplier < 1 || multiplier > 3 || !isThrowable(throwScore) || (multiplier == 3 && throwScore == 25))
             return false;
 
         Throw currentThrow = new Throw(throwScore, multiplier);
@@ -86,7 +86,7 @@ public class Game
         List<(string, int)> results = [];
 
         results = players
-            .OrderByDescending(p => p.score)
+            .OrderBy(p => p.score)
             .Select(p => (p.name, p.score))
             .ToList();
         return results;

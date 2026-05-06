@@ -5,7 +5,7 @@ public class Player
 
     public string name { get; set; }
     public int score { get; set; }
-    public int tempScore { get; set; } = 0;
+    public int tempScore { get; set; }
     public List<Throw> throws { get; set; } = new List<Throw>();
     public List<Throw> tempThrows { get; set; } = new List<Throw>();
 
@@ -25,7 +25,7 @@ public class Player
 
     public void PlayerThrows(Throw dartThrow)
     {
-        tempScore = score - (dartThrow.score * dartThrow.multiplier);
+        tempScore = tempScore - (dartThrow.score * dartThrow.multiplier);
         if (tempScore >= 0)
         {
             tempThrows.Add(dartThrow);
@@ -37,12 +37,14 @@ public class Player
     public bool isRoundOk()
     {
         if (TOOMUCHFLAG)
+        {
+            tempScore = score;
             return false;
+        }
         if (tempScore >= 0)
         {
             score = tempScore;
             throws.AddRange(tempThrows);
-            tempScore = 0;
             tempThrows.Clear();
             return true;
         }
@@ -63,5 +65,9 @@ public class Player
     public string scoreToString()
     {
         return ($"{score} point left");
+    }
+    public string tempScoreToString()
+    {
+        return ($"{tempScore} point left");
     }
 }

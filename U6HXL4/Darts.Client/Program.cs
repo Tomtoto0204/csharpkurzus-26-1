@@ -83,11 +83,13 @@ internal class Program
             currentPlayer = game.getCurrentPlayer();
 
             //jatekoslog
+            Console.WriteLine("");
             Console.WriteLine(currentPlayer.turnString());
 
             for (int i = 0; i < 3; i++)
             {
-                Console.WriteLine(currentPlayer.scoreToString());
+                Console.WriteLine(currentPlayer.tempScoreToString());
+                Console.WriteLine("Write your throw in this form: multiplier point");
                 game.PlayerThrowsOneDart(Console.ReadLine()!);
                 if (currentPlayer.TOOMUCHFLAG)
                 {
@@ -112,6 +114,7 @@ internal class Program
 
 
         ScoreboardConsoleWrite();
+        maxThrow();
         Console.ReadLine();
 
 
@@ -128,9 +131,26 @@ internal class Program
 
         void ScoreboardConsoleWrite()
         {
+            int i = 0;
             foreach (var player in game.Scoreboard())
             {
-                Console.WriteLine($"Name: {player.Item1} , Points left: {player.Item2}");
+                i++;
+                Console.WriteLine($"#{i}: Name: {player.Item1} , Points left: {player.Item2}");
+            }
+
+        }
+
+
+        ///NEMJO Megkéne változtatni mondjuk egy biggest avg-re
+        void maxThrow()
+        {
+            int i = 0;
+            Console.WriteLine();
+            Console.WriteLine("Biggest throws for each player");
+            foreach (var player in game.players)
+            {
+                i++;
+                Console.WriteLine($"#{i}: Name: {player.name} , Biggest: {player.getMaxThrow()}");
             }
         }
 
