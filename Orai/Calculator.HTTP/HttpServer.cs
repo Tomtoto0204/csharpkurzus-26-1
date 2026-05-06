@@ -16,6 +16,8 @@ public class HttpServer : IDisposable
     private readonly int _port;
     private bool _isDisposed;
 
+    public List<IRequestHandler> RequestHandlers { get; }
+
     public HttpServer(ILogger logger, int port = 8080)
     {
         if (port < 0 || port > ushort.MaxValue)
@@ -25,6 +27,7 @@ public class HttpServer : IDisposable
         _listener = new TcpListener(IPAddress.Any, port);
         _semaphore = new SemaphoreSlim(10);
         _source = new CancellationTokenSource();
+        RequestHandlers = new List<IRequestHandler>();
     }
 
     ~HttpServer()
@@ -82,9 +85,24 @@ public class HttpServer : IDisposable
     private async Task HandleClient(TcpClient client, CancellationToken token)
     {
         using NetworkStream stream = client.GetStream();
-        HttpRequest request = await HttpRequestParser.ParseAsync(stream, _port);
-        await HandleNotFound(stream, token);
-        
+        try
+        {
+            HttpRequest request = await HttpRequestParser.ParseAsync(stream, _port);
+            foreach (var handler in RequestHandlers)
+            {
+                bool result = await handler.HandleRequest(request, stream, token);
+                if (result)
+                {
+                    return;
+                }
+            }
+            await HandleNotFound(stream, token);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex.Message);
+            await HandleInternalErrors(stream, token);
+        }
     }
 
     private async Task HandleNotFound(NetworkStream stream, CancellationToken token)
@@ -101,7 +119,24 @@ public class HttpServer : IDisposable
             """;
 
         using StreamWriter writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
-        await writer.WriteAsync(response);
+        await writer.WriteAsync(response.AsMemory(), token);
+    }
+
+    private async Task HandleInternalErrors(NetworkStream stream, CancellationToken token)
+    {
+        string message = "Internal server error";
+
+        string response = $"""
+            HTTP/1.1 500 Not Found
+            Date: {DateTime.UtcNow:R}
+            Content-Type: text/plain; charset=utf-8
+            Content-Length: {Encoding.UTF8.GetByteCount(message)}
+
+            {message}
+            """;
+
+        using StreamWriter writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
+        await writer.WriteAsync(response.AsMemory(), token);
     }
 
     public void Stop()

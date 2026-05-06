@@ -7,7 +7,10 @@ internal class Program
 {
     private static int Main(string[] args)
     {
+        string frondend = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "frontend.html"));
+
         using HttpServer server = new HttpServer(new ConsoleLogger(), 8080);
+        server.RequestHandlers.Add(new HtmlRequestHandler("/", frondend));
         server.Start();
         Console.ReadLine();
         server.Stop();
