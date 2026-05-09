@@ -20,7 +20,11 @@ public class Player
 
     public int getMaxThrow()
     {
-        return throws.Max(t => t.score);
+        if (throws == null || throws.Count == 0)
+        {
+            return 0;
+        }
+        return throws.Max(t => t.score * t.multiplier);
     }
 
     public void PlayerThrows(Throw dartThrow)

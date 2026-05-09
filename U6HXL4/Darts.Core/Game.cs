@@ -92,6 +92,34 @@ public class Game
         return results;
     }
 
+    public void saveScoreboard()
+    {
+        string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        docPath = Path.Combine(docPath, "dartsscores");
+        Directory.CreateDirectory(docPath);
+        string date = DateTime.Today.ToString("yyyy_MM_dd");
+        int i = 0;
+        using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, $"Scoreboard_{date}.txt")))
+        {
+
+            outputFile.WriteLine("Scoreboard:");
+            foreach (var player in Scoreboard())
+            {
+                i++;
+                outputFile.WriteLine($"#{i}: Name: {player.Item1} , Points left: {player.Item2}");
+            }
+
+            i = 0;
+            outputFile.WriteLine();
+            outputFile.WriteLine("Biggest throws for each player");
+            foreach (var player in players)
+            {
+                i++;
+                outputFile.WriteLine($"#{i}: Name: {player.name} , Biggest: {player.getMaxThrow()}");
+            }
+        }
 
 
+
+    }
 }

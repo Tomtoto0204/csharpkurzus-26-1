@@ -14,124 +14,137 @@ internal class Program
         bool doubleOut;
         bool gameActive;
         Player currentPlayer;
-
+        Game game;
 
 
         Console.WriteLine("Welcome to my Darts application!");
         Console.Write("> ");
 
-        while (true)
+        startGame();
+
+        void startGame()
         {
-            try
+
+            while (true)
             {
-                Console.WriteLine("Player count: ");
-                playerCount = Convert.ToInt32(Console.ReadLine());
-                break;
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Not a number!");
-            }
-        }
-        while (true)
-        {
-            try
-            {
-                Console.WriteLine("Starting point? (301, 501): ");
-                startingPoint = Convert.ToInt32(Console.ReadLine());
-                break;
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Not a number!");
-            }
-        }
-        Console.WriteLine("Double in? [Y/N]");
-        doubleIn = Console.ReadLine()?.ToUpper() == "Y";
-
-        Console.WriteLine("Double Out? [Y/N]: ");
-        doubleOut = Console.ReadLine()?.ToUpper() == "Y";
-
-        Game game = new(startingPoint, doubleIn, doubleIn);
-
-        for (int i = 1; i < playerCount + 1; i++)
-        {
-            Console.WriteLine($"Player {i} name: ");
-            string playerName = Console.ReadLine();
-            if (playerName == "" || playerName == null)
-                playerName = $"Player{i}";
-            game.players.Add(new Player(playerName, startingPoint));
-
-        }
-
-        Console.WriteLine("GAME CREATED! HAVE FUN!");
-
-
-        //while jatek aktiv
-        //currentplayer 3 Throw()/next/scoreboard
-        //IF Gameend(){
-        //  active rotty
-        //  Scoreboard}
-        //nextTurn()
-        //
-
-
-        ScoreboardConsoleWrite();
-
-        while (true)
-        {
-            currentPlayer = game.getCurrentPlayer();
-
-            //jatekoslog
-            Console.WriteLine("");
-            Console.WriteLine(currentPlayer.turnString());
-
-            for (int i = 0; i < 3; i++)
-            {
-                Console.WriteLine(currentPlayer.tempScoreToString());
-                Console.WriteLine("Write your throw in this form: multiplier point");
-                game.PlayerThrowsOneDart(Console.ReadLine()!);
-                if (currentPlayer.TOOMUCHFLAG)
+                try
                 {
-                    Console.WriteLine("Thats too much!!!!");
+                    Console.WriteLine("Player count: ");
+                    playerCount = Convert.ToInt32(Console.ReadLine());
                     break;
                 }
-
-                if (currentPlayer.isPlayerWonEarly())
+                catch (FormatException)
                 {
-                    Console.WriteLine("THE WINNER!!!");
+                    Console.WriteLine("Not a number!");
+                }
+            }
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Starting point? (301, 501): ");
+                    startingPoint = Convert.ToInt32(Console.ReadLine());
                     break;
                 }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Not a number!");
+                }
+            }
+            Console.WriteLine("Double in? [Y/N]");
+            doubleIn = Console.ReadLine()?.ToUpper() == "Y";
+
+            Console.WriteLine("Double Out? [Y/N]: ");
+            doubleOut = Console.ReadLine()?.ToUpper() == "Y";
+
+            game = new(startingPoint, doubleIn, doubleIn);
+
+            for (int i = 1; i < playerCount + 1; i++)
+            {
+                Console.WriteLine($"Player {i} name: ");
+                string playerName = Console.ReadLine();
+                if (playerName == "" || playerName == null)
+                    playerName = $"Player{i}";
+                game.players.Add(new Player(playerName, startingPoint));
 
             }
-            currentPlayer.isRoundOk();
-            Console.WriteLine(currentPlayer.scoreToString());
 
-            if (game.isGameEnd())
-                break;
-            game.nextPlayer();
+            Console.WriteLine("GAME CREATED! HAVE FUN!");
+
+
+            ScoreboardConsoleWrite();
+
+            while (true)
+            {
+                currentPlayer = game.getCurrentPlayer();
+
+                //jatekoslog
+                Console.WriteLine("");
+                Console.WriteLine(currentPlayer.turnString());
+
+                for (int i = 0; i < 3; i++)
+                {
+                    Console.WriteLine(currentPlayer.tempScoreToString());
+                    Console.WriteLine("Write your throw in this form: multiplier point");
+                    game.PlayerThrowsOneDart(Console.ReadLine()!);
+                    if (currentPlayer.TOOMUCHFLAG)
+                    {
+                        Console.WriteLine("Thats too much!!!!");
+                        break;
+                    }
+
+                    if (currentPlayer.isPlayerWonEarly())
+                    {
+                        Console.WriteLine("THE WINNER!!!");
+                        break;
+                    }
+
+                }
+                currentPlayer.isRoundOk();
+                Console.WriteLine(currentPlayer.scoreToString());
+
+                if (game.isGameEnd())
+                    break;
+                game.nextPlayer();
+            }
+
+
+            ScoreboardConsoleWrite();
+            maxThrow();
+            Console.WriteLine();
+            Console.WriteLine("Do you want to play again? Write: new");
+            Console.WriteLine("Do you want to save the score? Write: save");
+            Console.WriteLine("Do you want to exit? Write: exit");
+            string answer;
+            while (true)
+            {
+                answer = Console.ReadLine();
+
+                if (answer == "exit" || answer == "new" || answer == "save")
+                {
+                    break;
+                }
+            }
+            if (answer == "new")
+            {
+                startGame();
+            }
+            if (answer == "save")
+            {
+                game.saveScoreboard();
+                Console.WriteLine("Scoreboard is saved under Documents/dartsscores");
+            }
         }
-
-
-        ScoreboardConsoleWrite();
-        maxThrow();
-        Console.ReadLine();
-
-
-
-
-
-
-
-
-
-        ///functions
 
 
 
         void ScoreboardConsoleWrite()
         {
             int i = 0;
+
+
+            Console.WriteLine();
+            Console.WriteLine("Scoreboard:");
             foreach (var player in game.Scoreboard())
             {
                 i++;
@@ -141,7 +154,6 @@ internal class Program
         }
 
 
-        ///NEMJO Megkéne változtatni mondjuk egy biggest avg-re
         void maxThrow()
         {
             int i = 0;
