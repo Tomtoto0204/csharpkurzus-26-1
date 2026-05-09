@@ -134,6 +134,10 @@ internal class Program
                 game.saveScoreboard();
                 Console.WriteLine("Scoreboard is saved under Documents/dartsscores");
             }
+            if (answer == "exit")
+            {
+                Console.Clear();
+            }
         }
 
 
