@@ -1,8 +1,10 @@
 ﻿using Calculator.HTTP;
 
+namespace Calculator.Server;
+
 internal class ConsoleLogger : ILogger
 {
-    private object _lock = new object();
+    private readonly object _lock = new object();
 
     public void Error(string message)
     {
@@ -10,7 +12,7 @@ internal class ConsoleLogger : ILogger
         {
             Console.WriteLine(message);
         }
-        
+
     }
 
     public void Info(string message)
