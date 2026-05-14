@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-using Darts.Core;
+﻿using Darts.Core;
 
 namespace Darts.Client;
 
@@ -20,9 +18,7 @@ internal class Program
         Console.WriteLine("Welcome to my Darts application!");
         Console.Write("> ");
 
-        startGame();
-
-        void startGame()
+        while (true)
         {
 
             while (true)
@@ -57,7 +53,7 @@ internal class Program
             Console.WriteLine("Double Out? [Y/N]: ");
             doubleOut = Console.ReadLine()?.ToUpper() == "Y";
 
-            game = new(startingPoint, doubleIn, doubleIn);
+            game = new(startingPoint, doubleIn, doubleOut);
 
             for (int i = 1; i < playerCount + 1; i++)
             {
@@ -87,7 +83,7 @@ internal class Program
                     Console.WriteLine(currentPlayer.tempScoreToString());
                     Console.WriteLine("Write your throw in this form: multiplier point");
                     game.PlayerThrowsOneDart(Console.ReadLine()!);
-                    if (currentPlayer.TOOMUCHFLAG)
+                    if (currentPlayer.tooMuchFlag)
                     {
                         Console.WriteLine("Thats too much!!!!");
                         break;
@@ -113,7 +109,7 @@ internal class Program
             maxThrow();
             Console.WriteLine();
             Console.WriteLine("Do you want to play again? Write: new");
-            Console.WriteLine("Do you want to save the score? Write: save");
+            Console.WriteLine("Do you want to save the score and exit? Write: save");
             Console.WriteLine("Do you want to exit? Write: exit");
             string answer;
             while (true)
@@ -127,16 +123,18 @@ internal class Program
             }
             if (answer == "new")
             {
-                startGame();
+                continue;
             }
             if (answer == "save")
             {
                 game.saveScoreboard();
                 Console.WriteLine("Scoreboard is saved under Documents/dartsscores");
+                Console.ReadLine();
+                Environment.Exit(0);
             }
             if (answer == "exit")
             {
-                Console.Clear();
+                Environment.Exit(0);
             }
         }
 
@@ -169,12 +167,6 @@ internal class Program
                 Console.WriteLine($"#{i}: Name: {player.name} , Biggest: {player.getMaxThrow()}");
             }
         }
-
-
-
-
-
-
-        throw new UnreachableException("This shouldn't happen");
+        return 0;
     }
 }

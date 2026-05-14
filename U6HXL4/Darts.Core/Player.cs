@@ -9,7 +9,7 @@ public class Player
     public List<Throw> throws { get; set; } = new List<Throw>();
     public List<Throw> tempThrows { get; set; } = new List<Throw>();
 
-    public bool TOOMUCHFLAG { get; set; } = false;
+    public bool tooMuchFlag { get; set; } = false;
 
     public Player(string name, int score)
     {
@@ -35,14 +35,16 @@ public class Player
             tempThrows.Add(dartThrow);
         }
         else
-            TOOMUCHFLAG = true;
+            tooMuchFlag = true;
     }
 
     public bool isRoundOk()
     {
-        if (TOOMUCHFLAG)
+        if (tooMuchFlag)
         {
             tempScore = score;
+            tooMuchFlag = false;
+            tempThrows.Clear();
             return false;
         }
         if (tempScore >= 0)
@@ -68,10 +70,10 @@ public class Player
 
     public string scoreToString()
     {
-        return ($"{score} point left");
+        return ($"{score} points left");
     }
     public string tempScoreToString()
     {
-        return ($"{tempScore} point left");
+        return ($"{tempScore} points left");
     }
 }
