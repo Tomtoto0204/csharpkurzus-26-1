@@ -2,7 +2,7 @@
 
 using Calculator.Core;
 
-internal class Program
+internal class ClientProgram
 {
     private static int Main(string[] args)
     {
