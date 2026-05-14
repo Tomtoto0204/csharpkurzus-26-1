@@ -47,10 +47,10 @@ internal class Program
                     Console.WriteLine("Not a number!");
                 }
             }
-            Console.WriteLine("Double in? [Y/N]");
+            Console.WriteLine("Double in? [Y/N]:   ---TODO---");
             doubleIn = Console.ReadLine()?.ToUpper() == "Y";
 
-            Console.WriteLine("Double Out? [Y/N]: ");
+            Console.WriteLine("Double Out? [Y/N]:   ---TODO---");
             doubleOut = Console.ReadLine()?.ToUpper() == "Y";
 
             game = new(startingPoint, doubleIn, doubleOut);
